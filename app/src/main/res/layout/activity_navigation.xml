@@ -56,7 +56,7 @@
                 android:text="護理站" />
 
             <Button
-                android:id="@+id/btn_loc_scale"
+                android:id="@+id/btn_loc_treatment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_columnWeight="1"
@@ -65,19 +65,7 @@
                 android:layout_margin="20dp"
                 app:cornerRadius="30dp"
                 android:textSize="60sp"
-                android:text="體重計" />
-
-            <Button
-                android:id="@+id/btn_loc_linen"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_gravity="fill"
-                android:layout_margin="20dp"
-                app:cornerRadius="30dp"
-                android:textSize="60sp"
-                android:text="被服車" />
+                android:text="治療室" />
 
 
             <Button
@@ -92,6 +80,20 @@
                 android:textSize="60sp"
                 android:text="污物室" />
 
+
+            <Button
+                android:id="@+id/btn_loc_laundry"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="洗衣烘乾室" />
+
+
             <Button
                 android:id="@+id/btn_loc_pantry"
                 android:layout_width="0dp"
@@ -105,7 +107,7 @@
                 android:text="配膳室" />
 
             <Button
-                android:id="@+id/btn_loc_wheelchair"
+                android:id="@+id/btn_loc_wheelchair_cart"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_columnWeight="1"
@@ -114,7 +116,19 @@
                 android:layout_margin="20dp"
                 app:cornerRadius="30dp"
                 android:textSize="60sp"
-                android:text="輪椅區" />
+                android:text="輪椅推車區" />
+
+            <Button
+                android:id="@+id/btn_loc_entrance"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="出口" />
 
             <Button
                 android:id="@+id/btn_go_charge"
