@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>build.gradle.kts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #cf8e6d;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+build.gradle.kts</font>
+</center></td></tr></table>
+<pre><span class="s0">plugins </span><span class="s1">{</span>
+    <span class="s0">alias</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">plugins</span><span class="s1">.</span><span class="s0">android</span><span class="s1">.</span><span class="s0">application</span><span class="s1">)</span>
+    <span class="s0">alias</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">plugins</span><span class="s1">.</span><span class="s0">kotlin</span><span class="s1">.</span><span class="s0">android</span><span class="s1">)</span>
+<span class="s1">}</span>
+
+<span class="s0">android </span><span class="s1">{</span>
+    <span class="s0">namespace </span><span class="s1">= </span><span class="s2">&quot;com.example.temiapp&quot;</span>
+
+    <span class="s3">// 【修改 1】 改成 34 (Android 14) 穩定版，避免用 36 (預覽版) 導致錯誤</span>
+    <span class="s0">compileSdk </span><span class="s1">= </span><span class="s4">34</span>
+
+    <span class="s0">defaultConfig </span><span class="s1">{</span>
+        <span class="s0">applicationId </span><span class="s1">= </span><span class="s2">&quot;com.example.temiapp&quot;</span>
+        <span class="s0">minSdk </span><span class="s1">= </span><span class="s4">23 </span><span class="s3">// Temi 支援的最低版本，不用動</span>
+
+        <span class="s3">// 【修改 2】 配合上面，這裡也改成 34</span>
+        <span class="s0">targetSdk </span><span class="s1">= </span><span class="s4">34</span>
+
+        <span class="s0">versionCode </span><span class="s1">= </span><span class="s4">1</span>
+        <span class="s0">versionName </span><span class="s1">= </span><span class="s2">&quot;1.0&quot;</span>
+
+        <span class="s0">testInstrumentationRunner </span><span class="s1">= </span><span class="s2">&quot;androidx.test.runner.AndroidJUnitRunner&quot;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">buildTypes </span><span class="s1">{</span>
+        <span class="s0">release </span><span class="s1">{</span>
+            <span class="s0">isMinifyEnabled </span><span class="s1">= </span><span class="s5">false</span>
+            <span class="s0">proguardFiles</span><span class="s1">(</span>
+                <span class="s0">getDefaultProguardFile</span><span class="s1">(</span><span class="s2">&quot;proguard-android-optimize.txt&quot;</span><span class="s1">),</span>
+                <span class="s2">&quot;proguard-rules.pro&quot;</span>
+            <span class="s1">)</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+    <span class="s0">compileOptions </span><span class="s1">{</span>
+        <span class="s0">sourceCompatibility </span><span class="s1">= </span><span class="s0">JavaVersion</span><span class="s1">.</span><span class="s0">VERSION_11</span>
+        <span class="s0">targetCompatibility </span><span class="s1">= </span><span class="s0">JavaVersion</span><span class="s1">.</span><span class="s0">VERSION_11</span>
+    <span class="s1">}</span>
+    <span class="s0">kotlinOptions </span><span class="s1">{</span>
+        <span class="s0">jvmTarget </span><span class="s1">= </span><span class="s2">&quot;11&quot;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">dependencies </span><span class="s1">{</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">core</span><span class="s1">.</span><span class="s0">ktx</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">appcompat</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">material</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">activity</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">constraintlayout</span><span class="s1">)</span>
+    <span class="s0">testImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">junit</span><span class="s1">)</span>
+    <span class="s0">androidTestImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">junit</span><span class="s1">)</span>
+    <span class="s0">androidTestImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">espresso</span><span class="s1">.</span><span class="s0">core</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s2">&quot;com.belerweb:pinyin4j:2.5.1&quot;</span><span class="s1">)</span>
+    <span class="s3">// 這行版本 1.136.0 是正確的，保留即可</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s2">&quot;com.robotemi:sdk:1.136.0&quot;</span><span class="s1">)</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

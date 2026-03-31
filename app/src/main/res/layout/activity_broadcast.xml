@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="廣播車：政策宣傳"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="請選擇要廣播的內容："
+            android:textSize="30sp"
+            android:layout_marginBottom="10dp"/>
+
+        <ListView
+            android:id="@+id/listview_broadcast_topics"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#EEEEEE"
+            android:choiceMode="singleChoice"
+            android:listSelector="@android:color/holo_blue_light" />
+
+        <Button
+            android:id="@+id/btn_start_broadcast"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:text="開始巡航廣播"
+            android:textSize="30sp"
+            android:backgroundTint="#E91E63"/>
+
+        <Button
+            android:id="@+id/btn_stop_broadcast"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:text="停止廣播並返回"
+            android:textSize="30sp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:text="返回"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="#757575" />
+
+</FrameLayout>

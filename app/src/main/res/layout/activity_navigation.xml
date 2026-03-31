@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- 主選單區塊 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="環境導覽：請選擇目的地"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:columnCount="4"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins">
+
+            <Button
+                android:id="@+id/btn_full_tour"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:backgroundTint="#FF9800"
+                android:text="全區導覽" />
+
+            <Button
+                android:id="@+id/btn_loc_nursing"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="護理站" />
+
+            <Button
+                android:id="@+id/btn_loc_scale"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="體重計" />
+
+            <Button
+                android:id="@+id/btn_loc_linen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="被服車" />
+
+
+            <Button
+                android:id="@+id/btn_loc_dirty"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="污物室" />
+
+            <Button
+                android:id="@+id/btn_loc_pantry"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="配膳室" />
+
+            <Button
+                android:id="@+id/btn_loc_wheelchair"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="輪椅區" />
+
+            <Button
+                android:id="@+id/btn_go_charge"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:backgroundTint="#673AB7"
+                android:text="充電座" />
+
+        </GridLayout>
+
+    </LinearLayout>
+
+    <!-- 返回按鈕 (右上) -->
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:text="返回"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="#F44336"
+        app:cornerRadius="10dp" />
+
+    <!-- 導覽中的覆蓋層 -->
+    <RelativeLayout
+        android:id="@+id/layout_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#000000"
+        android:elevation="10dp">
+
+        <ImageView
+            android:id="@+id/img_overlay_location"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/nursing_station_img" />
+
+        <TextView
+            android:id="@+id/txt_overlay_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:layout_marginHorizontal="30dp"
+            android:padding="24dp"
+            android:background="#D9000000"
+            android:gravity="center"
+            android:text="Loading..."
+            android:textColor="#FFFFFF"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:maxLines="8"
+            android:ellipsize="end" />
+    </RelativeLayout>
+
+    <!-- [新增] Skip 按鈕 (左上) -->
+    <!-- 放在 XML 最後面，並加上 translationZ 和 stateListAnimator 強制置頂 -->
+    <Button
+        android:id="@+id/btn_skip"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:text="Skip"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="top|start"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="#F44336"
+        android:elevation="50dp"
+        android:translationZ="50dp"
+        android:stateListAnimator="@null"
+        app:cornerRadius="10dp" />
+
+</FrameLayout>
