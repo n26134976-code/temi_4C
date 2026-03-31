@@ -247,23 +247,24 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     private fun setupNavigationButtons() {
-        val btnNursing = findViewById<Button>(R.id.btn_loc_nursing)
-        val btnTreatment = findViewById<Button>(R.id.btn_loc_treatment)
-        val btnDirty = findViewById<Button>(R.id.btn_loc_dirty)
-        val btnLaundry = findViewById<Button>(R.id.btn_loc_laundry)
-        val btnPantry = findViewById<Button>(R.id.btn_loc_pantry)
+        // 注意:button的xml裡的id還沒改 (改了)
+        val btnNursing =        findViewById<Button>(R.id.btn_loc_nursing)
+        val btnTreatment =      findViewById<Button>(R.id.btn_loc_treatment)
+        val btnDirty =          findViewById<Button>(R.id.btn_loc_dirty)
+        val btnLaundry =        findViewById<Button>(R.id.btn_loc_laundry)
+        val btnPantry =         findViewById<Button>(R.id.btn_loc_pantry)
         val btnWheelchairCart = findViewById<Button>(R.id.btn_loc_wheelchair_cart)
-        val btnEntrance = findViewById<Button>(R.id.btn_loc_entrance)
+        val btnEntrance =       findViewById<Button>(R.id.btn_loc_entrance)
 //        val btnNursing = findViewById<Button>(R.id.btn_loc_nursing)
 //        val btnPantry = findViewById<Button>(R.id.btn_loc_pantry)
 //        val btnDirty = findViewById<Button>(R.id.btn_loc_dirty)
 //        val btnLinen = findViewById<Button>(R.id.btn_loc_linen)
 //        val btnWheelchair = findViewById<Button>(R.id.btn_loc_wheelchair)
 //        val btnScale = findViewById<Button>(R.id.btn_loc_scale)
-        val btnCharge = findViewById<Button>(R.id.btn_go_charge)
-        val btnFullTour = findViewById<Button>(R.id.btn_full_tour)
-        val btnBack = findViewById<Button>(R.id.btn_back)
-        val btnSkip = findViewById<Button>(R.id.btn_skip)
+        val btnCharge =         findViewById<Button>(R.id.btn_go_charge)
+        val btnFullTour =       findViewById<Button>(R.id.btn_full_tour)
+        val btnBack =           findViewById<Button>(R.id.btn_back)
+        val btnSkip =           findViewById<Button>(R.id.btn_skip)
 
         btnSkip.setOnClickListener { forceStopEverything() }
 
@@ -273,14 +274,14 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 //        btnLinen.setOnClickListener { startGoToLocation("被服車", false) }
 //        btnWheelchair.setOnClickListener { startGoToLocation("輪椅區", false) }
 //        btnScale.setOnClickListener { startGoToLocation("體重計", false) }
-        btnNursing.setOnClickListener { startGoToLocation("護理站", false) }
-        btnTreatment.setOnClickListener { startGoToLocation("治療室", false) }
-        btnDirty.setOnClickListener { startGoToLocation("污物室", false) }
-        btnLaundry.setOnClickListener { startGoToLocation("洗衣烘乾室", false) }
-        btnPantry.setOnClickListener { startGoToLocation("配膳室", false) }
-        btnWheelchairCart.setOnClickListener { startGoToLocation("輪椅推車區", false) }
-        btnEntrance.setOnClickListener { startGoToLocation("門口", false) }
-        btnCharge.setOnClickListener { startGoToLocation("充電座", false) }
+        btnNursing.setOnClickListener           { startGoToLocation("護理站", false) }
+        btnTreatment.setOnClickListener         { startGoToLocation("治療室", false) }
+        btnDirty.setOnClickListener             { startGoToLocation("污物室", false) }
+        btnLaundry.setOnClickListener           { startGoToLocation("洗衣烘乾室", false) }
+        btnPantry.setOnClickListener            { startGoToLocation("配膳室", false) }
+        btnWheelchairCart.setOnClickListener    { startGoToLocation("輪椅推車區", false) }
+        btnEntrance.setOnClickListener          { startGoToLocation("門口", false) }
+        btnCharge.setOnClickListener            { startGoToLocation("充電座", false) }
 
         btnFullTour.setOnClickListener {
             startFullTour()
@@ -393,13 +394,13 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         val onActionComplete = { checkNextMove(location) }
 
         val locationData = when (location) {
-            "護理站" -> Pair(nursingStationText, R.drawable.nursing_station_img)
-            "治療室" -> Pair(treatmentRoomText, R.drawable.treatment_room_img)
-            "污物室", "汙物室" -> Pair(dirtyRoomText, R.drawable.dirty_room_img)
-            "洗衣烘乾室" -> Pair(laundryText, R.drawable.laundry_img)
-            "配膳室" -> Pair(pantryRoomText, R.drawable.pantry_img)
-            "輪椅推車區" -> Pair(wheelchairCartText, R.drawable.wheelchaircart_img)
-            "門口" -> Pair(entranceText, R.drawable.entrance_img)
+            "護理站" ->             Pair(nursingStationText, R.drawable.nursing_station_img)
+            "治療室" ->             Pair(treatmentRoomText, R.drawable.treatment_room_img)
+            "污物室", "汙物室" ->   Pair(dirtyRoomText, R.drawable.dirty_room_img)
+            "洗衣烘乾室" ->         Pair(laundryText, R.drawable.laundry_img)
+            "配膳室" ->             Pair(pantryRoomText, R.drawable.pantry_img)
+            "輪椅推車區" ->         Pair(wheelchairCartText, R.drawable.wheelchaircart_img)
+            "門口" ->               Pair(entranceText, R.drawable.entrance_img)
 
 //            "護理站" -> Pair(nursingStationText, R.drawable.nursing_station_img)
 //            "體重計" -> Pair(scaleText, R.drawable.scale_img)
@@ -407,6 +408,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 //            "污物室", "汙物室" -> Pair(dirtyRoomText, R.drawable.dirty_room_img)
 //            "配膳室" -> Pair(pantryRoomText, R.drawable.pantry_img)
 //            "輪椅區" -> Pair(wheelchairText, R.drawable.wheelchair_img)
+            // 注意:圖片還沒改
             else -> null
         }
 
