@@ -79,6 +79,65 @@ class SpeechManager(
         }
     }
 
+    //speak可以暫停音樂撥放
+    // fun speak(text: String, onComplete: (() -> Unit)? = null) {
+    //     val safeText = text.trim()
+    //     if (safeText.isEmpty()) {
+    //         onComplete?.let { mainHandler.post(it) }
+    //         return
+    //     }
+
+    //     // 語音開始 → 停音樂
+    //     isSpeaking = true
+    //     stopMovingMusic()
+
+    //     clearTemiListener()
+
+    //     // 🔥 包一層 callback（統一處理語音結束）
+    //     val wrappedCallback = {
+    //         mainHandler.post {
+    //             isSpeaking = false
+
+    //             // 🔥 語音結束 → 如果還在導航就恢復音樂
+    //             if (isNavigating) {
+    //                 startMovingMusic()
+    //             }
+
+    //             onComplete?.invoke()
+    //         }
+    //     }
+
+    //     if (!ttsInitFinished) {
+    //         pendingSpeak = PendingSpeak(safeText, onComplete)
+    //         return
+    //     }
+
+    //     if (localTtsReady) {
+    //         val utteranceId = UUID.randomUUID().toString()
+    //         if (onComplete != null) {
+    //             callbacks[utteranceId] = onComplete
+    //         }
+
+    //         val result = tts?.speak(
+    //             safeText,
+    //             TextToSpeech.QUEUE_FLUSH,
+    //             Bundle().apply {
+    //                 putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId)
+    //             },
+    //             utteranceId
+    //         ) ?: TextToSpeech.ERROR
+
+    //         if (result != TextToSpeech.SUCCESS) {
+    //             callbacks.remove(utteranceId)
+    //             speakWithFallback(safeText, onComplete)
+    //         }
+    //         return
+    //     }
+
+    //     speakWithFallback(safeText, onComplete)
+    // }
+
+    //原版speak
     fun speak(text: String, onComplete: (() -> Unit)? = null) {
         val safeText = text.trim()
         if (safeText.isEmpty()) {
@@ -132,6 +191,53 @@ class SpeechManager(
         tts = null
     }
 
+    // 移動撥放音樂
+    // private fun speakWithFallback(text: String, onComplete: (() -> Unit)?) {
+    //     val temiRobot = if (AppRuntimeConfig.ENABLE_TEMI_TTS_FALLBACK) robot else null
+
+    //     // 🔥 語音開始 → 停音樂
+    //     isSpeaking = true
+    //     stopMovingMusic()
+
+    //     // 包裝 callback，語音結束後處理音樂恢復
+    //     val wrappedCallback = {
+    //         mainHandler.post {
+    //             isSpeaking = false
+
+    //             // 🔥 語音結束 → 如果還在導航就恢復音樂
+    //             if (isNavigating) {
+    //                 startMovingMusic()
+    //             }
+
+    //             onComplete?.invoke()
+    //         }
+    //     }
+
+    //     if (temiRobot != null) {
+    //         if (onComplete != null) {
+    //             val listener = object : Robot.TtsListener {
+    //                 override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
+    //                     if (ttsRequest.status == TtsRequest.Status.COMPLETED ||
+    //                         ttsRequest.status == TtsRequest.Status.ERROR
+    //                     ) {
+    //                         runCatching { temiRobot.removeTtsListener(this) }
+    //                         temiListener = null
+    //                         mainHandler.post(onComplete)
+    //                     }
+    //                 }
+    //             }
+    //             temiListener = listener
+    //             runCatching { temiRobot.addTtsListener(listener) }
+    //         }
+    //         temiRobot.speak(TtsRequest.create(text, false))
+    //         return
+    //     }
+
+    //     Log.w(TAG, "沒有可用的 TTS，引導改用文字顯示：$text")
+    //     wrappedCallback()
+    // }
+
+    // 原版
     private fun speakWithFallback(text: String, onComplete: (() -> Unit)?) {
         val temiRobot = if (AppRuntimeConfig.ENABLE_TEMI_TTS_FALLBACK) robot else null
 
