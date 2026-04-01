@@ -14,6 +14,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.media.MediaPlayer
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.listeners.OnGoToLocationStatusChangedListener
 import com.robotemi.sdk.listeners.OnRobotReadyListener
@@ -47,11 +48,28 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
     private var currentDialog: Dialog? = null
 
+    private var mediaPlayer: MediaPlayer? = null
+
     private lateinit var layoutOverlay: RelativeLayout
     private lateinit var imgOverlay: ImageView
     private lateinit var txtSubtitle: TextView
 
     private val handler = Handler(Looper.getMainLooper())
+
+    //移動播音樂
+    private fun startMovingMusic() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.moving_music) // 音樂檔放 raw
+            mediaPlayer?.isLooping = true
+            mediaPlayer?.setVolume(0.3f, 0.3f)
+        }
+        mediaPlayer?.start()
+    }
+
+    private fun stopMovingMusic() {
+        mediaPlayer?.pause()
+        mediaPlayer?.seekTo(0)
+    }
 
     private fun normNoSpace(s: String): String =
         s.replace(Regex("[\\s\\u3000]+"), "").lowercase()
@@ -114,6 +132,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             if (!isTouring && !layoutOverlay.isShown) return
 
             if (status.equals("complete", ignoreCase = true)) {
+                stopMovingMusic()
                 handleArrivalLogic(location.trim())
             }
         }
@@ -165,6 +184,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     override fun onDestroy() {
+        mediaPlayer?.release()
+        mediaPlayer = null
         speechManager.shutdown()
         super.onDestroy()
     }
@@ -233,6 +254,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     private fun forceStopEverything() {
+        stopMovingMusic()
         robot.stopMovement()
         speechManager.stop()
         handler.removeCallbacksAndMessages(null)
@@ -317,6 +339,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         }
 
         speechManager.speak("現在前往$displayName")
+        startMovingMusic()
         robot.goTo(goToName)
         Toast.makeText(this, "前往 $displayName", Toast.LENGTH_SHORT).show()
     }
@@ -475,7 +498,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         return when (current) {
             "護理站" -> "治療室"
             "治療室" -> "污物室"
-            "污物室" -> "洗衣烘乾室"
+            "污物室", "汙物室" -> "洗衣烘乾室"
             "洗衣烘乾室" -> "配膳室"
             "配膳室" -> "輪椅推車區"
             "輪椅推車區" -> "門口"
