@@ -408,7 +408,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 //            "污物室", "汙物室" -> Pair(dirtyRoomText, R.drawable.dirty_room_img)
 //            "配膳室" -> Pair(pantryRoomText, R.drawable.pantry_img)
 //            "輪椅區" -> Pair(wheelchairText, R.drawable.wheelchair_img)
-            // 注意:圖片還沒改
+            // 注意:圖片還沒改 (改了)
             else -> null
         }
 
