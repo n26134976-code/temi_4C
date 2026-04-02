@@ -63,7 +63,9 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             mediaPlayer?.isLooping = true
             mediaPlayer?.setVolume(0.3f, 0.3f)
         }
-        mediaPlayer?.start()
+        if (mediaPlayer?.isPlaying != true) {
+            mediaPlayer?.start()
+        }
     }
 
     private fun stopMovingMusic() {
@@ -338,8 +340,9 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             showOverlayUI("正在前往：$displayName...", R.drawable.nursing_station_img)
         }
 
-        speechManager.speak("現在前往$displayName")
-        startMovingMusic()
+        speechManager.speak("現在前往$displayName") {
+            startMovingMusic()
+        }
         robot.goTo(goToName)
         Toast.makeText(this, "前往 $displayName", Toast.LENGTH_SHORT).show()
     }
