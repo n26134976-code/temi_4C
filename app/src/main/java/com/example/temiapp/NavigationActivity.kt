@@ -319,8 +319,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         isTouring = true
         isReturningToStart = false
         showOverlayUI("開始全區導覽，前往護理站...", R.drawable.nursing_station_img)
-        speechManager.speak("開始全區導覽，現在前往護理站")
-        robot.goTo("護理站")
+        // ✅ 統一走這裡（會自動播音樂）
+        startGoToLocation("護理站", true)
     }
 
     private fun startGoToLocation(locationName: String, tourMode: Boolean) {
@@ -482,8 +482,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
                 }
 
                 handler.postDelayed({
-                    speechManager.speak("現在前往$nextLocation")
-                    robot.goTo(nextLocation)
+                    // ✅ 改這裡：統一走導航方法
+                    startGoToLocation(nextLocation, true)
                 }, 2000)
             } else {
                 isTouring = false
@@ -491,7 +491,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             }
         } else {
             hideOverlayUI()
-            if (currentLocation == "護理站") {
+            if (currentLocation == "出口") {
                 runOnUiThread { showCustomDialog() }
             }
         }
@@ -505,7 +505,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             "洗衣烘乾室" -> "配膳室"
             "配膳室" -> "輪椅推車區"
             "輪椅推車區" -> "門口"
-            "門口" -> "護理站"
+//            "門口" -> "護理站"
+
 
 //            "護理站" -> "體重計"
 //            "體重計" -> "污物室"
