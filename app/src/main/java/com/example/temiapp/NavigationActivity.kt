@@ -56,10 +56,18 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
     private val handler = Handler(Looper.getMainLooper())
 
+    //修改音樂
+    private val musicList = listOf(
+        R.raw.moving_music,
+        R.raw.moving_music_2,
+        R.raw.moving_music_3
+    )
+    private var currentMusicIndex = 0
+
     //移動播音樂
     private fun startMovingMusic() {
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.moving_music) // 音樂檔放 raw
+            mediaPlayer = MediaPlayer.create(this, musicList[currentMusicIndex]) // 音樂檔放 raw
             mediaPlayer?.isLooping = true
             mediaPlayer?.setVolume(0.3f, 0.3f)
         }
@@ -71,6 +79,72 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     private fun stopMovingMusic() {
         mediaPlayer?.pause()
         mediaPlayer?.seekTo(0)
+    }
+
+    //選擇音樂
+    private fun showMusicDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_music_select)
+        dialog.setCancelable(true)
+
+        val btn1 = dialog.findViewById<Button>(R.id.btn_music1)
+        val btn2 = dialog.findViewById<Button>(R.id.btn_music2)
+        val btn3 = dialog.findViewById<Button>(R.id.btn_music3)
+
+        btn1.setOnClickListener {
+            switchMusic(0)
+            dialog.dismiss()
+        }
+        btn2.setOnClickListener {
+            switchMusic(1)
+            dialog.dismiss()
+        }
+        btn3.setOnClickListener {
+            switchMusic(2)
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    //****
+    private fun saveMusicIndex(index: Int) {
+        val sp = getSharedPreferences("app_settings", MODE_PRIVATE)
+        sp.edit().putInt("music_index", index).apply()
+    }
+
+    private fun loadMusicIndex() {
+        val sp = getSharedPreferences("app_settings", MODE_PRIVATE)
+        currentMusicIndex = sp.getInt("music_index", 0)
+    }
+
+    //******
+
+    private fun switchMusic(index: Int) {
+        currentMusicIndex = index
+        saveMusicIndex(index)   // ✅ 加這行***
+
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+
+        mediaPlayer = MediaPlayer.create(this, musicList[currentMusicIndex])
+        mediaPlayer?.isLooping = true
+        mediaPlayer?.setVolume(0.3f, 0.3f)
+        mediaPlayer?.start()
+
+        Toast.makeText(this, "已切換為 Music ${index + 1}", Toast.LENGTH_SHORT).show()
+
+        // 5秒後停止音樂
+        handler.postDelayed({
+            mediaPlayer?.let { mp ->
+                if (mp.isPlaying) {
+                    mp.stop()
+                    mp.release()
+                    mediaPlayer = null
+                }
+            }
+        }, 5000)
     }
 
     private fun normNoSpace(s: String): String =
@@ -151,6 +225,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
         robot = Robot.getInstance()
         speechManager = SpeechManager(this, robot)
+        loadMusicIndex() //***
 
         layoutOverlay = findViewById(R.id.layout_overlay)
         imgOverlay = findViewById(R.id.img_overlay_location)
@@ -289,6 +364,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         val btnFullTour =       findViewById<Button>(R.id.btn_full_tour)
         val btnBack =           findViewById<Button>(R.id.btn_back)
         val btnSkip =           findViewById<Button>(R.id.btn_skip)
+        //改音樂按鈕
+        val btnMusic = findViewById<Button>(R.id.btn_music)
 
         btnSkip.setOnClickListener { forceStopEverything() }
 
@@ -309,6 +386,9 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
         btnFullTour.setOnClickListener {
             startFullTour()
+        }
+        btnMusic.setOnClickListener {
+            showMusicDialog()
         }
 
         btnBack.setOnClickListener { finish() }
@@ -343,9 +423,12 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         speechManager.speak("現在前往$displayName") {
             startMovingMusic()
         }
+
         robot.goTo(goToName)
+
         Toast.makeText(this, "前往 $displayName", Toast.LENGTH_SHORT).show()
     }
+
 
     private fun showWardQuestionDialog(roomKey: String) {
         if (isFinishing || isDestroyed) return
@@ -491,7 +574,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             }
         } else {
             hideOverlayUI()
-            if (currentLocation == "出口") {
+            if (currentLocation == "護理站") {
                 runOnUiThread { showCustomDialog() }
             }
         }
@@ -505,7 +588,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             "洗衣烘乾室" -> "配膳室"
             "配膳室" -> "輪椅推車區"
             "輪椅推車區" -> "門口"
-//            "門口" -> "護理站"
+            "門口" -> "護理站"
 
 
 //            "護理站" -> "體重計"
