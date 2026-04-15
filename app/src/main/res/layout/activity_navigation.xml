@@ -147,6 +147,22 @@
 
     </LinearLayout>
 
+    <!--修改音樂按鈕    -->
+    <Button
+        android:id="@+id/btn_music"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:text="音樂"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="160dp"
+        android:backgroundTint="#2196F3"
+        app:cornerRadius="10dp" />
+
+
     <!-- 返回按鈕 (右上) -->
     <Button
         android:id="@+id/btn_back"
