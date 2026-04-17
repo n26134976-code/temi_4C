@@ -147,6 +147,60 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         }, 5000)
     }
 
+    //根據今天日期更改音樂
+    private fun getTodayFestivalMusic(): Int? {
+        val today = java.text.SimpleDateFormat("MMdd", java.util.Locale.getDefault())
+            .format(java.util.Date())
+
+        return when (today) {
+            "1225" -> 1   // 🎄 聖誕節 → musicList[1]
+            "0415" -> 2   // 🎆 元旦 → musicList[2]
+            "0214" -> 0   // ❤️ 情人節 → musicList[0]
+            else -> null  // 平常日
+        }
+    }
+
+    //測試日期更改音樂，使用分鐘做變化
+//    private fun getTodayFestivalMusic(): Int? {
+//        val calendar = java.util.Calendar.getInstance()
+//        val minute = calendar.get(java.util.Calendar.MINUTE)
+//
+//        // 👉 每分鐘輪流測試不同音樂
+//        return when (minute % 3) {
+//            0 -> 0   // 模擬「情人節」
+//            1 -> 1   // 模擬「聖誕節」
+//            2 -> 2   // 模擬「元旦」
+//            else -> null
+//        }
+//    }
+
+
+    private fun applyFestivalMusicIfNeeded() {
+        val festivalIndex = getTodayFestivalMusic() ?: return
+
+        val sp = getSharedPreferences("app_settings", MODE_PRIVATE)
+        val lastDate = sp.getString("festival_date", "")
+
+        val today = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault())
+            .format(java.util.Date())
+
+        //測試日期更改音樂，使用分鐘做變化
+//        val today = java.text.SimpleDateFormat("yyyyMMddHHmm", java.util.Locale.getDefault())
+//            .format(java.util.Date())
+
+        // ✅ 同一天不要重複切
+        if (lastDate == today) return
+
+        currentMusicIndex = festivalIndex
+
+        sp.edit()
+            .putInt("music_index", festivalIndex)
+            .putString("festival_date", today)
+            .apply()
+
+        Log.d(TAG, "節日音樂啟用 index=$festivalIndex")
+    }
+
     private fun normNoSpace(s: String): String =
         s.replace(Regex("[\\s\\u3000]+"), "").lowercase()
 
@@ -225,6 +279,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
         robot = Robot.getInstance()
         speechManager = SpeechManager(this, robot)
+        applyFestivalMusicIfNeeded() //根據日期更改音樂
         loadMusicIndex() //***
 
         layoutOverlay = findViewById(R.id.layout_overlay)
@@ -395,6 +450,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     private fun startFullTour() {
+        startMovingMusic()
         if (!robot.isReady) return
         isTouring = true
         isReturningToStart = false
@@ -404,6 +460,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     private fun startGoToLocation(locationName: String, tourMode: Boolean) {
+        startMovingMusic()
         handler.removeCallbacksAndMessages(null)
         if (!robot.isReady) return
 
