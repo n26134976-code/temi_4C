@@ -39,8 +39,8 @@
                 android:layout_gravity="fill"
                 android:layout_margin="20dp"
                 app:cornerRadius="30dp"
-                android:textSize="60sp"
                 android:backgroundTint="#FF9800"
+                android:textSize="50sp"
                 android:text="全區導覽" />
 
             <Button
@@ -80,6 +80,29 @@
                 android:textSize="60sp"
                 android:text="污物室" />
 
+            <Button
+                android:id="@+id/btn_loc_treehouse"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="50sp"
+                android:text="晴空樹屋" />
+
+            <Button
+                android:id="@+id/btn_loc_bulletin_board"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="佈告欄" />
 
             <Button
                 android:id="@+id/btn_loc_laundry"
@@ -90,9 +113,20 @@
                 android:layout_gravity="fill"
                 android:layout_margin="20dp"
                 app:cornerRadius="30dp"
-                android:textSize="60sp"
+                android:textSize="40sp"
                 android:text="洗衣烘乾室" />
 
+            <Button
+                android:id="@+id/btn_loc_digital_bulletin_board"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="40sp"
+                android:text="電子佈告欄" />
 
             <Button
                 android:id="@+id/btn_loc_pantry"
@@ -115,7 +149,7 @@
                 android:layout_gravity="fill"
                 android:layout_margin="20dp"
                 app:cornerRadius="30dp"
-                android:textSize="60sp"
+                android:textSize="40sp"
                 android:text="輪椅推車區" />
 
             <Button
@@ -129,6 +163,18 @@
                 app:cornerRadius="30dp"
                 android:textSize="60sp"
                 android:text="出口" />
+
+            <Button
+                android:id="@+id/btn_loc_information_desk"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="20dp"
+                app:cornerRadius="30dp"
+                android:textSize="60sp"
+                android:text="諮詢站" />
 
             <Button
                 android:id="@+id/btn_go_charge"
