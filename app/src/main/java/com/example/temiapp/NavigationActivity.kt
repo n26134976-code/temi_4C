@@ -237,19 +237,27 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         name.replace(Regex("[\\s\\u3000]+"), "").lowercase()
 
     private val nursingStationText =
-        "這裡是護理站和諮詢站，若您有任何醫療需求，請諮詢護理站人員；若您需要辦理出院或查詢住院費用請至諮詢站諮詢書記。"
+        "這裡是護理站，新病人報到、需要護理師協助或量身高體重可直接來這裡"
     private val dirtyRoomText =
-        "這裡是污物室，請依垃圾分類標示丟棄正確物品、衣服棉被請放入藍色污衣桶、尿布請丟棄至洗手台旁尿布垃圾桶，非醫療廢棄物請至配膳室執行垃圾分類。"
+        "這裡是污物室，髒衣物更換後需要清洗請拿到這裡，放進藍色污衣桶。旁邊推車上面放的是乾淨的枕頭套及床單，需要更換可以自己拿取，提醒!!若需要更換棉被或病人服，請找護理師，依院方規定請不要囤積被服"
     private val treatmentRoomText =
-        "這裡是治療室，提供各項醫療處置與治療服務，請依照醫護人員指示進入並配合相關流程。"
+        "這裡是治療室，需要打針、抽血、放管路、做治療處置時，請將小孩帶到這裡"
     private val laundryText =
-        "這裡是洗衣烘乾室，提供住院期間衣物清洗與烘乾服務，請依照使用規範操作設備。"
+        "這裡是洗衣間，需要洗衣烘衣可以投幣使用"
     private val entranceText =
-        "這裡是門口，為出入病房的主要通道，請留意進出安全並配合相關訪客管理規定。"
+        "這裡是4C病房大門，我們設有門禁管控，旁邊有感應機器，提醒!!進入請使用陪病證感應"
     private val pantryRoomText =
-        "這裡是配膳室，為了愛護地球，請您依垃圾分類標示完成垃圾分類，廚餘請倒入廚餘桶；這裡也有製冰機，僅供冰敷或冰枕使用，不可以食用；而飲水機半夜會有消毒時間，取用時請注意時間。"
+        "這裡是配膳室，可裝飲用水，裡面有廚餘桶、垃圾桶、資源回收處，請記得分類丟棄，提醒!!清洗餐具時請勿丟入雜物到排水管內"
     private val wheelchairCartText =
-        "這裡是輪椅推車放置處，若您需要使用輪椅推車時，請自行取用，使用完畢請主動歸位。"
+        "這裡是放置輪椅/推車的地方，有需要使用可以自己推走，提醒!!使用完畢後請推至污物室清潔"
+    private val treehouseText =
+        "這裡是一個安靜漂亮的小空間，邀請你在出院的日子一起來做親子共讀，享受舒服的氛圍~"
+    private val BulletinBoardText =
+        "這裡有我們日常的活動日程表及宣導事項，來走路散步的時候可以看看喔!"
+    private val DigitalBulletinBoardText =
+        "這裡有我們兒童樂園的成員介紹、相關疾病的衛教、宣導影音，走過路過千萬別錯過，建議停下來欣賞欣賞喔~"
+    private val InformationDeskText =
+        "這裡是護理站也是諮詢站，書記會在此處，若您需要辦理出院或查詢住院費用請諮詢書記"
 
 
     private val goToLocationStatusListener = object : OnGoToLocationStatusChangedListener {
@@ -259,7 +267,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             descriptionId: Int,
             description: String
         ) {
-            if (!isTouring && !layoutOverlay.isShown) return
+            if (!isTouring && !layoutOverlay.isShown) return //如果temi到定點不會說話刪除這行
 
             if (status.equals("complete", ignoreCase = true)) {
                 stopMovingMusic()
@@ -409,6 +417,10 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         val btnPantry =         findViewById<Button>(R.id.btn_loc_pantry)
         val btnWheelchairCart = findViewById<Button>(R.id.btn_loc_wheelchair_cart)
         val btnEntrance =       findViewById<Button>(R.id.btn_loc_entrance)
+        val btnTreehouse =            findViewById<Button>(R.id.btn_loc_treehouse)
+        val btnBulletinBoard =        findViewById<Button>(R.id.btn_loc_bulletin_board)
+        val btnDigitalBulletinBoard = findViewById<Button>(R.id.btn_loc_digital_bulletin_board)
+        val btnInformationDesk =      findViewById<Button>(R.id.btn_loc_information_desk)
 //        val btnNursing = findViewById<Button>(R.id.btn_loc_nursing)
 //        val btnPantry = findViewById<Button>(R.id.btn_loc_pantry)
 //        val btnDirty = findViewById<Button>(R.id.btn_loc_dirty)
@@ -437,6 +449,10 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         btnPantry.setOnClickListener            { startGoToLocation("配膳室", false) }
         btnWheelchairCart.setOnClickListener    { startGoToLocation("輪椅推車區", false) }
         btnEntrance.setOnClickListener          { startGoToLocation("門口", false) }
+        btnTreehouse.setOnClickListener            { startGoToLocation("晴空樹屋", false) }
+        btnBulletinBoard.setOnClickListener        { startGoToLocation("佈告欄", false) }
+        btnDigitalBulletinBoard.setOnClickListener { startGoToLocation("電子佈告欄", false) }
+        btnInformationDesk.setOnClickListener      { startGoToLocation("諮詢站", false) }
         btnCharge.setOnClickListener            { startGoToLocation("充電座", false) }
 
         btnFullTour.setOnClickListener {
@@ -455,6 +471,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         isTouring = true
         isReturningToStart = false
         showOverlayUI("開始全區導覽，前往護理站...", R.drawable.nursing_station_img)
+        speechManager.speak("你好，我是temi，我是導覽小幫手，接下來由我來幫您介紹4C兒童樂園的整體環境")
         // ✅ 統一走這裡（會自動播音樂）
         startGoToLocation("護理站", true)
     }
@@ -530,7 +547,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     private fun handleArrivalLogic(location: String) {
-        if (isTouring && location == "護理站" && isReturningToStart) {
+        if (isTouring && location == "諮詢站" && isReturningToStart) {
             isTouring = false
             isReturningToStart = false
             runOnUiThread {
@@ -567,6 +584,10 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             "配膳室" ->             Pair(pantryRoomText, R.drawable.pantry_img)
             "輪椅推車區" ->         Pair(wheelchairCartText, R.drawable.wheelchaircart_img)
             "門口" ->               Pair(entranceText, R.drawable.entrance_img)
+            "晴空樹屋" ->           Pair(treehouseText, R.drawable.treehouse_img)
+            "佈告欄" ->             Pair(BulletinBoardText, R.drawable.bulletin_board_img)
+            "電子佈告欄" ->         Pair(DigitalBulletinBoardText, R.drawable.digital_bulletin_board_img)
+            "諮詢站" ->             Pair(InformationDeskText, R.drawable.information_desk_img)
 
 //            "護理站" -> Pair(nursingStationText, R.drawable.nursing_station_img)
 //            "體重計" -> Pair(scaleText, R.drawable.scale_img)
@@ -614,7 +635,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         if (isTouring) {
             val nextLocation = getNextTourLocation(currentLocation)
             if (nextLocation != null) {
-                if (nextLocation == "護理站") isReturningToStart = true
+                if (nextLocation == "諮詢站") isReturningToStart = true
 
                 runOnUiThread {
                     txtSubtitle.text = "即將前往：$nextLocation..."
@@ -641,11 +662,14 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         return when (current) {
             "護理站" -> "治療室"
             "治療室" -> "污物室"
-            "污物室", "汙物室" -> "洗衣烘乾室"
-            "洗衣烘乾室" -> "配膳室"
+            "污物室", "汙物室" -> "晴空樹屋"
+            "晴空樹屋" -> "佈告欄"
+            "佈告欄", "布告欄"   -> "洗衣烘乾室"
+            "洗衣烘乾室" -> "電子佈告欄"
+            "電子佈告欄" -> "配膳室"
             "配膳室" -> "輪椅推車區"
             "輪椅推車區" -> "門口"
-            "門口" -> "護理站"
+            "門口" -> "諮詢站"
 
 
 //            "護理站" -> "體重計"
