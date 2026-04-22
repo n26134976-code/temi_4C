@@ -56,6 +56,66 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
     private val handler = Handler(Looper.getMainLooper())
 
+
+
+    //儲存 / 讀取導覽進度
+    // FIX: retry 機制
+    private var retryCount = 0
+    private val MAX_RETRY = 2
+
+    // FIX: 導覽進度
+    private var tourIndex = 0
+    private val tourList = listOf(
+        "護理站",
+        "治療室",
+        "污物室",
+        "晴空樹屋",
+        "佈告欄",
+        "洗衣烘乾室",
+        "電子佈告欄",
+        "配膳室",
+        "輪椅推車區",
+        "門口",
+        "諮詢站"
+    )
+
+    // FIX: 根據地點取得圖片
+    private fun getLocationImage(location: String): Int {
+        return when (location) {
+            "護理站" -> R.drawable.nursing_station_img
+            "治療室" -> R.drawable.treatment_room_img
+            "污物室", "汙物室" -> R.drawable.dirty_room_img
+            "洗衣烘乾室" -> R.drawable.laundry_img
+            "配膳室" -> R.drawable.pantry_img
+            "輪椅推車區" -> R.drawable.wheelchaircart_img
+            "門口" -> R.drawable.entrance_img
+            "晴空樹屋" -> R.drawable.treehouse_img
+            "佈告欄" -> R.drawable.bulletin_board_img
+            "電子佈告欄" -> R.drawable.digital_bulletin_board_img
+            "諮詢站" -> R.drawable.information_desk_img
+            else -> R.drawable.nursing_station_img // 預設圖（避免 crash）
+        }
+    }
+
+    // FIX
+    private fun saveTourProgress() {
+        val sp = getSharedPreferences("tour_progress", MODE_PRIVATE)
+        sp.edit().putInt("tour_index", tourIndex).apply()
+    }
+
+    // FIX
+    private fun loadTourProgress(): Int {
+        val sp = getSharedPreferences("tour_progress", MODE_PRIVATE)
+        return sp.getInt("tour_index", 0)
+    }
+
+    // FIX
+    private fun clearTourProgress() {
+        val sp = getSharedPreferences("tour_progress", MODE_PRIVATE)
+        sp.edit().clear().apply()
+    }
+
+
     //修改音樂
     private val musicList = listOf(
         R.raw.moving_music,
@@ -260,6 +320,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         "這裡是護理站也是諮詢站，書記會在此處，若您需要辦理出院或查詢住院費用請諮詢書記"
 
 
+    private var isHandlingFailure = false // FIX: 防止重複觸發
+
     private val goToLocationStatusListener = object : OnGoToLocationStatusChangedListener {
         override fun onGoToLocationStatusChanged(
             location: String,
@@ -270,8 +332,48 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
             if (!isTouring && !layoutOverlay.isShown) return //如果temi到定點不會說話刪除這行
 
             if (status.equals("complete", ignoreCase = true)) {
+                isHandlingFailure = false // FIX
+                retryCount = 0 // FIX: 成功後重置
                 stopMovingMusic()
                 handleArrivalLogic(location.trim())
+                return  //FIX
+            }
+
+            // FIX: 導航失敗處理
+            if (status.equals("abort", true) || status.equals("fail", true)) {
+                // FIX: 避免連續觸發
+                if (isHandlingFailure) return
+                isHandlingFailure = true
+
+                Log.e(TAG, "導航失敗: $location")
+                speechManager.speak("導航失敗")
+
+                val target = activeTarget ?: location // FIX: 用正確目標    
+
+                if (retryCount < MAX_RETRY) {
+                    retryCount++
+                    runOnUiThread {
+                        Toast.makeText(this@NavigationActivity,"前往 $target 失敗，重試第 $retryCount 次",Toast.LENGTH_SHORT).show()
+                    }
+                    
+                    // ✅ 語音（只講一次，不要每次 fail 都講）
+                    if (retryCount == 1) {
+                        speechManager.speak("前方路線受阻，正在重新嘗試")
+                    }
+
+                    handler.postDelayed({
+                        isHandlingFailure = false // FIX: 允許下一次 retry
+                        startGoToLocation(location, isTouring)
+                    }, 1500)
+
+                } else {
+                    Log.e(TAG, "重試失敗，改為原地導覽")
+                    speechManager.speak("重試失敗，改為原地導覽")
+                    retryCount = 0
+                    isHandlingFailure = false
+                    // 👉 直接觸發到達邏輯（原地講解）
+                    handleArrivalLogic(location)
+                }
             }
         }
     }
@@ -399,6 +501,11 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         speechManager.stop()
         handler.removeCallbacksAndMessages(null)
 
+        // FIX: 儲存目前進度
+        if (isTouring) {
+            saveTourProgress()
+        }
+
         isTouring = false
         isReturningToStart = false
 
@@ -466,18 +573,31 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     }
 
     private fun startFullTour() {
-        startMovingMusic()
+//        startMovingMusic()
         if (!robot.isReady) return
+
+        val lastIndex = loadTourProgress() // FIX
+
+        if (lastIndex > 0) {
+            showResumeDialog(lastIndex) // FIX
+            return
+        }
+
         isTouring = true
+        tourIndex = 0 // FIX
+        saveTourProgress() // FIX，可能可以刪除
         isReturningToStart = false
         showOverlayUI("開始全區導覽，前往護理站...", R.drawable.nursing_station_img)
         speechManager.speak("你好，我是temi，我是導覽小幫手，接下來由我來幫您介紹4C兒童樂園的整體環境")
         // ✅ 統一走這裡（會自動播音樂）
-        startGoToLocation("護理站", true)
+        //startGoToLocation("護理站", true)  //原版
+        {
+            startGoToLocation(tourList[tourIndex], true) // FIX
+        }
     }
 
     private fun startGoToLocation(locationName: String, tourMode: Boolean) {
-        startMovingMusic()
+//        startMovingMusic()
         handler.removeCallbacksAndMessages(null)
         if (!robot.isReady) return
 
@@ -490,8 +610,12 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         val goToName = resolveGoToName(normalizedLocation)
         val displayName = if (normalizedLocation == "home base") "充電座" else normalizedLocation
 
+        // FIX: 取得對應圖片
+        val imageRes = getLocationImage(displayName)
+
         if (!tourMode) {
-            showOverlayUI("正在前往：$displayName...", R.drawable.nursing_station_img)
+//            showOverlayUI("正在前往：$displayName...", R.drawable.nursing_station_img)
+            showOverlayUI("正在前往：$displayName...",imageRes)
         }
 
         speechManager.speak("現在前往$displayName") {
@@ -633,26 +757,30 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
     private fun checkNextMove(currentLocation: String) {
         if (isTouring) {
-            val nextLocation = getNextTourLocation(currentLocation)
-            if (nextLocation != null) {
-                if (nextLocation == "諮詢站") isReturningToStart = true
+            // FIX: index 控制 instead of 原本 mapping
+            tourIndex++
 
+            if (tourIndex < tourList.size) {
+                saveTourProgress() // FIX
+                val nextLocation = tourList[tourIndex]
+                if (nextLocation == "諮詢站") isReturningToStart = true
                 runOnUiThread {
                     txtSubtitle.text = "即將前往：$nextLocation..."
                     Toast.makeText(this, "導覽繼續，2秒後前往：$nextLocation", Toast.LENGTH_SHORT).show()
                 }
-
                 handler.postDelayed({
-                    // ✅ 改這裡：統一走導航方法
                     startGoToLocation(nextLocation, true)
                 }, 2000)
-            } else {
-                isTouring = false
-                hideOverlayUI()
-            }
+                } else {
+                    // FIX: 完成導覽
+                    clearTourProgress()
+
+                    isTouring = false
+                    hideOverlayUI()
+                }
         } else {
             hideOverlayUI()
-            if (currentLocation == "護理站") {
+            if (currentLocation == "諮詢站") {
                 runOnUiThread { showCustomDialog() }
             }
         }
@@ -722,4 +850,38 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         dialog.show()
         speechManager.speak("請問是否還有其他問題？")
     }
+
+    //新增「是否繼續播」Dialog
+    // FIX
+    private fun showResumeDialog(lastIndex: Int) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_resume)
+
+        val btnYes = dialog.findViewById<Button>(R.id.btn_yes)
+        val btnNo = dialog.findViewById<Button>(R.id.btn_no)
+
+        btnYes.setOnClickListener {
+            dialog.dismiss()
+
+            isTouring = true
+            tourIndex = lastIndex
+
+            startGoToLocation(tourList[tourIndex], true)
+        }
+
+        btnNo.setOnClickListener {
+            dialog.dismiss()
+
+            clearTourProgress()
+
+            isTouring = true
+            tourIndex = 0
+
+            startFullTour()
+        }
+
+        dialog.show()
+    }
+
 }
