@@ -57,7 +57,7 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     private val handler = Handler(Looper.getMainLooper())
 
     // FIX2: timeout + 卡住偵測
-    private val NAV_TIMEOUT = 30000L
+    private val NAV_TIMEOUT = 10000L
     private var navTimeoutRunnable: Runnable? = null
     private var lastPosition: com.robotemi.sdk.navigation.model.Position? = null
     private var stuckStartTime: Long = 0
@@ -66,22 +66,28 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     //儲存 / 讀取導覽進度
     // FIX: retry 機制
     private var retryCount = 0
+    private var abort_num = 0
+
+
     private val MAX_RETRY = 2
 
     // FIX: 導覽進度
     private var tourIndex = 0
     private val tourList = listOf(
-        "護理站",
-        "治療室",
-        "污物室",
-        "晴空樹屋",
-        "佈告欄",
         "洗衣烘乾室",
-        "電子佈告欄",
         "配膳室",
-        "輪椅推車區",
-        "門口",
         "諮詢站"
+//        "護理站",
+//        "治療室",
+//        "污物室",
+//        "晴空樹屋",
+//        "佈告欄",
+//        "洗衣烘乾室",
+//        "電子佈告欄",
+//        "配膳室",
+//        "輪椅推車區",
+//        "門口",
+//        "諮詢站"
     )
 
 //    // FIX2: 判斷是否卡住（5秒幾乎沒動），原版
@@ -183,17 +189,20 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
     // FIX: 根據地點取得圖片
     private fun getLocationImage(location: String): Int {
         return when (location) {
-            "護理站" -> R.drawable.nursing_station_img
-            "治療室" -> R.drawable.treatment_room_img
-            "污物室", "汙物室" -> R.drawable.dirty_room_img
             "洗衣烘乾室" -> R.drawable.laundry_img
             "配膳室" -> R.drawable.pantry_img
-            "輪椅推車區" -> R.drawable.wheelchaircart_img
-            "門口" -> R.drawable.entrance_img
-            "晴空樹屋" -> R.drawable.treehouse_img
-            "佈告欄" -> R.drawable.bulletin_board_img
-            "電子佈告欄" -> R.drawable.digital_bulletin_board_img
             "諮詢站" -> R.drawable.information_desk_img
+//            "護理站" -> R.drawable.nursing_station_img
+//            "治療室" -> R.drawable.treatment_room_img
+//            "污物室", "汙物室" -> R.drawable.dirty_room_img
+//            "洗衣烘乾室" -> R.drawable.laundry_img
+//            "配膳室" -> R.drawable.pantry_img
+//            "輪椅推車區" -> R.drawable.wheelchaircart_img
+//            "門口" -> R.drawable.entrance_img
+//            "晴空樹屋" -> R.drawable.treehouse_img
+//            "佈告欄" -> R.drawable.bulletin_board_img
+//            "電子佈告欄" -> R.drawable.digital_bulletin_board_img
+//            "諮詢站" -> R.drawable.information_desk_img
             else -> R.drawable.nursing_station_img // 預設圖（避免 crash）
         }
     }
@@ -440,8 +449,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
                     Log.e(TAG, "偵測到卡住 → 原地導覽")
 
                     robot.stopMovement()
-
-                    speechManager.speak("前方無法通行，我在這裡為您介紹")
+                    stopMovingMusic()
+                    speechManager.speak("time out前方無法通行，我在這裡為您介紹")
 
                     navTimeoutRunnable?.let { handler.removeCallbacks(it) }
 
@@ -456,50 +465,138 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
 
                 isHandlingFailure = false // FIX
                 retryCount = 0 // FIX: 成功後重置
+                abort_num = 0
                 stopMovingMusic()
                 handleArrivalLogic(location.trim())
                 return  //FIX
             }
 
             // FIX: 導航失敗處理
-            if (status.equals("abort", true) || status.equals("fail", true)) {
-                // FIX2
-                navTimeoutRunnable?.let { handler.removeCallbacks(it) }
+//            if (status.equals("abort", true) || status.equals("fail", true)) {
+//
+//                abort_num++
+//                Log.d(TAG, "abort 次數 = $abort_num")
+//
+//                if (abort_num <= 5) {
+//                    return // 還在觀察期
+//                }
+//
+//                if (isHandlingFailure) return
+//                isHandlingFailure = true
+//
+//                    stopMovingMusic()
+//                    val target = activeTarget ?: location
+//
+//                    val message = if (retryCount == 0) {
+//                        "前方路線受阻，正在重新嘗試"
+//                    } else {
+//                        "前往 $target 失敗，第 $retryCount 次重試"
+//                    }
+//                    speechManager.speak(message) {
+//
+//                        if (retryCount < MAX_RETRY) {
+//                            retryCount++
+//
+//                            handler.postDelayed({
+//                                isHandlingFailure = false
+//                                abort_num = 0   // 🔥 很重要：reset
+//                                startGoToLocation(location, isTouring)
+//                            }, 800)
+//
+//                        } else {
+//                            retryCount = 0
+//                            isHandlingFailure = false
+//                            abort_num = 0   // 🔥 很重要：reset
+//
+//                            speechManager.speak("無法通行，我在這裡為您介紹") {
+//                                handleArrivalLogic(location)
+//                            }
+//                        }
+//                    }
+//            }
 
-                // FIX: 避免連續觸發
-                if (isHandlingFailure) return
-                isHandlingFailure = true
+            //可以執行
+//            if (status.equals("abort", true) || status.equals("fail", true)) {
+//
+//                if (isHandlingFailure) return
+//                isHandlingFailure = true
+//
+//                stopMovingMusic()
+//
+//                val target = activeTarget ?: location
+//
+//                val message = if (retryCount == 0) {
+//                    "前方路線受阻，正在重新嘗試"
+//                } else {
+//                    "前往 $target 失敗，第 $retryCount 次重試"
+//                }
+//
+//                speechManager.speak(message) {
+//
+//                    if (retryCount < MAX_RETRY) {
+//                        retryCount++
+//
+//                        handler.postDelayed({
+//                            isHandlingFailure = false
+//                            startGoToLocation(location, isTouring)
+//                        }, 800)
+//
+//                    } else {
+//                        retryCount = 0
+//                        isHandlingFailure = false
+//
+//                        speechManager.speak("無法通行，我在這裡為您介紹") {
+//                            handleArrivalLogic(location)
+//                        }
+//                    }
+//                }
+//            }
 
-                Log.e(TAG, "導航失敗: $location")
-                speechManager.speak("導航失敗")
 
-                val target = activeTarget ?: location // FIX: 用正確目標
+//            if (status.equals("abort", true) || status.equals("fail", true)) {
+//                // FIX2
+//                navTimeoutRunnable?.let { handler.removeCallbacks(it) }
+//
+//                // FIX: 避免連續觸發
+//                if (isHandlingFailure) return
+//                isHandlingFailure = true
+//                stopMovingMusic()
+//                Log.e(TAG, "導航失敗: $location")
+//                speechManager.speak("導航失敗abort")
+//
+//                val target = activeTarget ?: location // FIX: 用正確目標
+//
+//                if (retryCount < MAX_RETRY) {
+//                    retryCount++
+//                    runOnUiThread {
+//                        Toast.makeText(this@NavigationActivity,"前往 $target 失敗，重試第 $retryCount 次",Toast.LENGTH_SHORT).show()
+//                    }
+//
+//                    stopMovingMusic()
+//                    speechManager.speak("前往 $target 失敗，重試第 $retryCount 次")
+//
+//                    // ✅ 語音（只講一次，不要每次 fail 都講）
+//                    if (retryCount == 1) {
+//                        stopMovingMusic()
+//                        speechManager.speak("前方路線受阻，正在重新嘗試")
+//                    }
+//
+//                    handler.postDelayed({
+//                        isHandlingFailure = false // FIX: 允許下一次 retry
+//                        startGoToLocation(location, isTouring)
+//                    }, 1500)
+//
+//                } else {
+//                    stopMovingMusic()
+//                    Log.e(TAG, "重試失敗，改為原地導覽")
+//                    speechManager.speak("重試失敗，改為原地導覽")
+//                    retryCount = 0
+//                    isHandlingFailure = false
+//                    // 👉 直接觸發到達邏輯（原地講解）
+//                    handleArrivalLogic(location)
+//                }
+//            }
 
-                if (retryCount < MAX_RETRY) {
-                    retryCount++
-                    runOnUiThread {
-                        Toast.makeText(this@NavigationActivity,"前往 $target 失敗，重試第 $retryCount 次",Toast.LENGTH_SHORT).show()
-                    }
-
-                    // ✅ 語音（只講一次，不要每次 fail 都講）
-                    if (retryCount == 1) {
-                        speechManager.speak("前方路線受阻，正在重新嘗試")
-                    }
-
-                    handler.postDelayed({
-                        isHandlingFailure = false // FIX: 允許下一次 retry
-                        startGoToLocation(location, isTouring)
-                    }, 1500)
-
-                } else {
-                    Log.e(TAG, "重試失敗，改為原地導覽")
-                    speechManager.speak("重試失敗，改為原地導覽")
-                    retryCount = 0
-                    isHandlingFailure = false
-                    // 👉 直接觸發到達邏輯（原地講解）
-                    handleArrivalLogic(location)
-                }
-            }
         }
     }
 
@@ -714,8 +811,8 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         tourIndex = 0 // FIX
         saveTourProgress() // FIX，可能可以刪除
         isReturningToStart = false
-        showOverlayUI("開始全區導覽，前往護理站...", R.drawable.nursing_station_img)
-        speechManager.speak("你好，我是temi，我是導覽小幫手，接下來由我來幫您介紹4C兒童樂園的整體環境")
+        showOverlayUI("你好，我是temi，我是導覽小幫手，接下來由我來幫您介紹4C兒童樂園的整體環境", R.drawable.nursing_station_img)
+        speechManager.speak("開始導覽")
         // ✅ 統一走這裡（會自動播音樂）
         //startGoToLocation("護理站", true)  //原版
         {
