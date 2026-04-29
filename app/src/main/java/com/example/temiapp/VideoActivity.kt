@@ -222,9 +222,26 @@ class VideoActivity : AppCompatActivity() {
                 if (currentSlideIndex < currentSlidesList.size) {
                     playCurrentSlide()
                 } else {
-                    onPlaybackFinished()
+                    // FIX: 不要呼叫 onPlaybackFinished()
+                    // 改為停留在最後一張
+                    onSlideshowFinished() // FIX
                 }
             }
+        }
+    }
+
+    // FIX: 新增函式，專門處理 slideshow 播放完成
+    private fun onSlideshowFinished() {
+        isPlayingSlideshow = false
+        isMediaPaused = true
+
+        // 保持最後畫面，不做任何 UI 隱藏
+        btnPauseResume.text = "播放完畢"
+        btnPauseResume.setBackgroundColor(android.graphics.Color.GRAY)
+
+        // 如果需要播放結束後詢問，可保留（不會關閉畫面）
+        if (afterAskAndCharge) {
+            showQuestionDialog()
         }
     }
 
