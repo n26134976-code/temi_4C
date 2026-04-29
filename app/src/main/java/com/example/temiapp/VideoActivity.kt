@@ -29,6 +29,9 @@ class VideoActivity : AppCompatActivity() {
         const val KEY_ORAL_CLEAN = "oral_clean"
         const val KEY_CHEMO_TUBE = "chemo_tube"
         const val KEY_SURGERY_NOTICE = "surgery_notice"
+
+        const val KEY_MAGICC = "magicc"
+        const val KEY_FALL_PREVENTION = "fallprevention"
     }
 
     data class Slide(val imageResId: Int, val textToSpeak: String)
@@ -92,6 +95,10 @@ class VideoActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_video_1).setOnClickListener { onPick(KEY_ORAL_CLEAN) }
         findViewById<Button>(R.id.btn_video_2).setOnClickListener { onPick(KEY_CHEMO_TUBE) }
         findViewById<Button>(R.id.btn_video_3).setOnClickListener { onPick(KEY_SURGERY_NOTICE) }
+
+        findViewById<Button>(R.id.btn_video_magicc).setOnClickListener { onPick(KEY_MAGICC) }
+
+        findViewById<Button>(R.id.btn_video_fall).setOnClickListener { onPick(KEY_FALL_PREVENTION) }
 
         btnBack.setOnClickListener { finish() }
         videoView.setOnCompletionListener { onPlaybackFinished() }
@@ -164,6 +171,9 @@ class VideoActivity : AppCompatActivity() {
                 KEY_WARD_NOTICE -> "safety_guide"
                 KEY_ORAL_CLEAN -> "oral_hygiene"
                 KEY_CHEMO_TUBE -> "care"
+                // ✅ 新增這兩個
+                KEY_MAGICC -> "magicc"
+                KEY_FALL_PREVENTION -> "fallprevention"
                 else -> ""
             }
 
