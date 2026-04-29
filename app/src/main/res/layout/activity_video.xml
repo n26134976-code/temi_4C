@@ -78,6 +78,28 @@
                 app:cornerRadius="20dp"
                 android:text="口腔清潔"
                 android:textSize="44sp" />
+
+            <Button
+                android:id="@+id/btn_video_magicc"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="10dp"
+                app:cornerRadius="20dp"
+                android:text="魔法吸＋c"
+                android:textSize="44sp" />
+
+            <Button
+                android:id="@+id/btn_video_fall"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:layout_margin="10dp"
+                app:cornerRadius="20dp"
+                android:text="防跌四寶"
+                android:textSize="44sp" />
         </GridLayout>
     </LinearLayout>
 
