@@ -320,6 +320,30 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         "這裡是護理站也是諮詢站，書記會在此處，若您需要辦理出院或查詢住院費用請諮詢書記"
 
 
+    private val nursingStationspeakText =
+        "這裡是護理站，新病人報到，需要護理師協助或量身高體重可直接來這裡"
+    private val dirtyRoomspeakText =
+        "這裡是污物室，髒衣物更換後需要清洗請拿到這裡，放進藍色污衣桶，旁邊推車上面放的是乾淨的枕頭套及床單，需要更換可以自己拿取，提醒，若需要更換棉被或病人服，請找護理師，依院方規定請不要囤積被服"
+    private val treatmentRoomspeakText =
+        "這裡是治療室，需要打針、抽血、放管路、做治療處置時，請將小孩帶到這裡"
+    private val laundryspeakText =
+        "這裡是洗衣間，需要洗衣烘衣可以投幣使用"
+    private val entrancespeakText =
+        "這裡是4C病房大門，我們設有門禁管控，旁邊有感應機器，提醒，進入請使用陪病證感應"
+    private val pantryRoomspeakText =
+        "這裡是配膳室，可裝飲用水，裡面有廚餘桶、垃圾桶、資源回收處，請記得分類丟棄，提醒，清洗餐具時請勿丟入雜物到排水管內"
+    private val wheelchairCartspeakText =
+        "這裡是放置輪椅推車的地方，有需要使用可以自己推走，提醒，使用完畢後請推至污物室清潔"
+    private val treehousespeakText =
+        "這裡是一個安靜漂亮的小空間，邀請你在出院的日子一起來做親子共讀，享受舒服的氛圍"
+    private val BulletinBoardspeakText =
+        "這裡有我們日常的活動日程表及宣導事項，來走路散步的時候可以看看喔"
+    private val DigitalBulletinBoardspeakText =
+        "這裡有我們兒童樂園的成員介紹、相關疾病的衛教、宣導影音，走過路過千萬別錯過，建議停下來欣賞欣賞喔"
+    private val InformationDeskspeakText =
+        "這裡是護理站也是諮詢站，書記會在此處，若您需要辦理出院或查詢住院費用請諮詢書記"
+
+
     private var isHandlingFailure = false // FIX: 防止重複觸發
 
     private val goToLocationStatusListener = object : OnGoToLocationStatusChangedListener {
@@ -701,17 +725,17 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         val onActionComplete = { checkNextMove(location) }
 
         val locationData = when (location) {
-            "護理站" ->             Pair(nursingStationText, R.drawable.nursing_station_img)
-            "治療室" ->             Pair(treatmentRoomText, R.drawable.treatment_room_img)
-            "污物室", "汙物室" ->   Pair(dirtyRoomText, R.drawable.dirty_room_img)
-            "洗衣烘乾室" ->         Pair(laundryText, R.drawable.laundry_img)
-            "配膳室" ->             Pair(pantryRoomText, R.drawable.pantry_img)
-            "輪椅推車區" ->         Pair(wheelchairCartText, R.drawable.wheelchaircart_img)
-            "門口" ->               Pair(entranceText, R.drawable.entrance_img)
-            "晴空樹屋" ->           Pair(treehouseText, R.drawable.treehouse_img)
-            "佈告欄" ->             Pair(BulletinBoardText, R.drawable.bulletin_board_img)
-            "電子佈告欄" ->         Pair(DigitalBulletinBoardText, R.drawable.digital_bulletin_board_img)
-            "諮詢站" ->             Pair(InformationDeskText, R.drawable.information_desk_img)
+            "護理站" ->             Triple(nursingStationspeakText,nursingStationText, R.drawable.nursing_station_img)
+            "治療室" ->             Triple(treatmentRoomspeakText,treatmentRoomText, R.drawable.treatment_room_img)
+            "污物室", "汙物室" ->   Triple(dirtyRoomspeakText,dirtyRoomText, R.drawable.dirty_room_img)
+            "洗衣烘乾室" ->         Triple(laundryspeakText,laundryText, R.drawable.laundry_img)
+            "配膳室" ->             Triple(pantryRoomspeakText,pantryRoomText, R.drawable.pantry_img)
+            "輪椅推車區" ->         Triple(wheelchairCartspeakText,wheelchairCartText, R.drawable.wheelchaircart_img)
+            "門口" ->               Triple(entrancespeakText,entranceText, R.drawable.entrance_img)
+            "晴空樹屋" ->           Triple(treehousespeakText,treehouseText, R.drawable.treehouse_img)
+            "佈告欄" ->             Triple(BulletinBoardspeakText,BulletinBoardText, R.drawable.bulletin_board_img)
+            "電子佈告欄" ->         Triple(DigitalBulletinBoardspeakText,DigitalBulletinBoardText, R.drawable.digital_bulletin_board_img)
+            "諮詢站" ->             Triple(InformationDeskspeakText,InformationDeskText, R.drawable.information_desk_img)
 
 //            "護理站" -> Pair(nursingStationText, R.drawable.nursing_station_img)
 //            "體重計" -> Pair(scaleText, R.drawable.scale_img)
@@ -724,9 +748,10 @@ class NavigationActivity : AppCompatActivity(), OnRobotReadyListener {
         }
 
         if (locationData != null) {
-            val (speakText, imageResId) = locationData
-            showOverlayUI(speakText, imageResId)
-            speakWithCallback(speakText, onActionComplete)
+            val (speakText,displayText,imageResId) = locationData
+            showOverlayUI(displayText, imageResId)   // 👈 顯示用
+            speakWithCallback(speakText, onActionComplete) // 👈 語音用
+
         } else {
             if (location == "home base" || location == "充電座") {
                 speechManager.speak("很高興為您服務，我現在要充電了。")
